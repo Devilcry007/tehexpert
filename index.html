@@ -1,0 +1,1759 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Служба поддержки пользователей - Видеоконференции</title>
+    <style>
+        :root {
+            --blue: #005a9c;
+            --orange: #ff6f31;
+            --light-bg: #f9f9f9;
+            --dark: #222;
+            --border-radius: 12px;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --success: #4caf50;
+            --error: #f44336;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background-color: #fff;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--blue), #003d6b);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-link {
+            display: inline-block;
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            z-index: 10;
+        }
+
+        .logo {
+            width: 80px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            background-color: var(--orange);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button-link {
+            background-color: var(--orange);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .glowing-btn {
+            background: linear-gradient(90deg, var(--orange), #ffffff, var(--orange));
+            background-size: 200% auto;
+            color: var(--dark);
+            animation: glowing 3s linear infinite;
+            border: none;
+            font-weight: bold;
+        }
+
+        @keyframes glowing {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .nav-button:hover,
+        .nav-button-link:hover {
+            background-color: #e05b24;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 20px auto;
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background-color: var(--blue);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .team-section {
+            width: 30%;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .team-member {
+            margin-bottom: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .team-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--blue);
+            margin-bottom: 10px;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .news-section {
+            width: 60%;
+            padding: 20px;
+        }
+
+        .calendar-section {
+            width: 40%;
+            padding: 20px;
+        }
+
+        .calendar-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            width: 100%;
+            position: relative;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-year {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--blue);
+        }
+
+        .nav-buttons-calendar button {
+            background-color: var(--orange);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .nav-buttons-calendar button:hover {
+            background-color: #e05b24;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            position: relative;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+            color: var(--blue);
+            font-size: 14px;
+        }
+
+        .day {
+            position: relative;
+            height: 70px;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: visible;
+            border: 1px solid #eee;
+        }
+
+        .day:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .day.has-events {
+            background-color: rgba(0, 90, 156, 0.1);
+            border: 2px solid var(--blue);
+        }
+
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .event-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin: 2px auto;
+        }
+
+        .empty-day {
+            background-color: transparent;
+            cursor: default;
+            border: none;
+        }
+
+        .empty-day:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .event-type-1 {
+            background-color: var(--blue);
+        }
+        .event-type-2 {
+            background-color: var(--orange);
+        }
+        .event-type-3 {
+            background-color: #4caf50;
+        }
+        .event-type-4 {
+            background-color: #9c27b0;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .event-modal {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .event-modal {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--orange);
+        }
+
+        .modal-title {
+            color: var(--blue);
+            margin-bottom: 20px;
+            padding-right: 30px;
+            font-size: 1.5rem;
+        }
+
+        .event-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--blue);
+        }
+
+        .event-date {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .event-goal {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .register-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .join-conference-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .register-btn:hover {
+            background: #e05b24;
+        }
+
+        .join-conference-btn:hover {
+            background: #45a049;
+        }
+
+        .news-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            border-left: 4px solid var(--blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .news-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .news-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .news-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--blue);
+        }
+
+        .bottom-sections {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .bottom-section {
+            flex: 1;
+            min-width: 250px;
+            transition: transform 0.3s ease;
+        }
+
+        .bottom-section:hover {
+            transform: translateY(-3px);
+        }
+
+        details {
+            margin-bottom: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 10px 20px;
+            transition: transform 0.3s ease;
+        }
+
+        details:hover {
+            transform: translateY(-3px);
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .knowledge-links {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .knowledge-links:hover {
+            transform: translateY(-3px);
+        }
+
+        .knowledge-links ul {
+            list-style: none;
+        }
+
+        .knowledge-links li {
+            margin-bottom: 10px;
+        }
+
+        .knowledge-links a {
+            color: var(--blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .knowledge-links a:hover {
+            color: var(--orange);
+            text-decoration: underline;
+        }
+
+        .support-panel {
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            width: 250px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+        }
+
+        .support-panel.active {
+            transform: translateY(0);
+        }
+
+        .support-header {
+            background: var(--orange);
+            color: white;
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .support-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .close-panel {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .support-content {
+            padding: 20px;
+        }
+
+        .floating-contact {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--orange);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s ease;
+            border: none;
+            font-weight: bold;
+        }
+
+        .floating-contact:hover {
+            background-color: #e05b24;
+            transform: translateY(-3px);
+        }
+
+        .quiz-section {
+            display: none;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h2 {
+            color: var(--blue);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--orange);
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+
+        .question-section {
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--blue);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 15px;
+            background-color: var(--light-bg);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .option.selected {
+            border-color: var(--blue);
+            background-color: rgba(0, 90, 156, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--error);
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+
+        .explanation {
+            padding: 20px;
+            background-color: rgba(0, 90, 156, 0.05);
+            border-left: 4px solid var(--blue);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--orange);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 16px;
+            display: inline-block;
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: #e05b24;
+            transform: translateY(-2px);
+        }
+
+        .result-section {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .result-section h2 {
+            color: var(--blue);
+            margin-bottom: 20px;
+        }
+
+        .result-success {
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .result-fail {
+            color: var(--error);
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .certificate {
+            max-width: 100%;
+            border: 2px solid var(--blue);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin: 20px 0;
+            display: none;
+        }
+
+        .study-links {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .study-links h3 {
+            margin-bottom: 15px;
+            color: var(--blue);
+        }
+
+        .study-links ul {
+            list-style-type: none;
+        }
+
+        .study-links li {
+            margin-bottom: 10px;
+        }
+
+        .study-links a {
+            color: var(--blue);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .study-links a:hover {
+            color: var(--orange);
+            text-decoration: underline;
+        }
+
+        .newspapers-section {
+            background: linear-gradient(to right, #2c3e50, #1a2530);
+            padding: 30px 20px;
+            color: white;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newspapers-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .newspapers-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ffd166;
+        }
+
+        .newspapers-carousel {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .newspapers-container {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .newspaper-item {
+            min-width: 220px;
+            margin: 0 12px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .newspaper-item:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .newspaper-cover {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-bottom: 3px solid #ff6f31;
+        }
+
+        .newspaper-info {
+            padding: 12px;
+            background: #fff;
+            color: #333;
+        }
+
+        .newspaper-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #005a9c;
+            height: 40px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .newspaper-date {
+            color: #666;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: #ffd166;
+            transform: scale(1.2);
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 40%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn {
+            left: 15px;
+        }
+
+        .next-btn {
+            right: 15px;
+        }
+
+        .newspaper-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .newspaper-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 90%;
+            height: 90vh;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6f31;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .shining-title {
+            background: linear-gradient(90deg, #ffd166, #ff9a3c, #ffd166);
+            background-size: 200% auto;
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: shine 3s linear infinite;
+        }
+
+        .pdf-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e63946;
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #111;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 1200px) {
+            .news-section {
+                width: 100%;
+            }
+
+            .calendar-section {
+                width: 100%;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content,
+            .news-section,
+            .team-section {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .team-section {
+                order: -1;
+            }
+
+            .support-panel {
+                width: 50%;
+                max-width: 300px;
+                right: 10px;
+                bottom: 70px;
+            }
+
+            .logo-link {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .support-panel {
+                width: 60%;
+                max-width: none;
+            }
+
+            .logo-link {
+                left: 20px;
+                top: 30px;
+            }
+
+            .event-modal {
+                padding: 15px;
+            }
+
+            .event-name {
+                font-size: 1.1rem;
+            }
+
+            .newspaper-item {
+                min-width: 200px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .support-panel {
+                width: 80%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="eventModal">
+        <div class="event-modal">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h2 class="modal-title" id="modalDateTitle">Мероприятия</h2>
+            <div id="eventList"></div>
+        </div>
+    </div>
+
+    <div class="support-panel" id="supportPanel">
+        <div class="support-header" id="panelHeader">
+            <h3>Написать в поддержку</h3>
+            <button class="close-panel" id="closePanel">&times;</button>
+        </div>
+        <div class="support-content">
+            <form
+                class="contact-form"
+                id="supportForm"
+                action="mailto:shepelin@iprosoft.ru"
+                method="post"
+                enctype="text/plain"
+            >
+                <input type="text" name="name" placeholder="Ваше имя" required />
+                <input type="email" name="email" placeholder="Email" required />
+                <textarea
+                    name="message"
+                    placeholder="Опишите вашу проблему..."
+                    required
+                ></textarea>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <header>
+        <a href="https://stroyka.cntd.ru/lider/" class="logo-link">
+            <img src="icon/tehexpert.png" alt="Логотип компании" class="logo" />
+        </a>
+        <h1>Служба поддержки пользователей</h1>
+        <div class="nav-buttons">
+            <button class="nav-button">Перейти в Техэксперт</button>
+            <button class="nav-button">Задать вопрос в СПП</button>
+            <a href="training.html" class="nav-button-link"
+                >Записаться на обучение</a>
+            <a href="rpg-quiz.html" class="nav-button">КВИЗ с подарками</a>
+            <button class="nav-button" id="quizBtn">Сертификация</button>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="team-section">
+            <h2 style="margin-bottom: 20px">Наша команда</h2>
+
+            <div class="team-member">
+                <img src="foto/kate.jpg" alt="Фото специалиста" class="team-photo" />
+                <h3 style="font-size: 1.1em; margin: 8px 0">
+                    Демидова Екатерина Владимировна
+                </h3>
+                <p style="margin: 4px 0; font-size: 0.95em">
+                    Руководитель отдела сервиса
+                </p>
+                <p style="margin: 4px 0; color: #555">demidova@iprosoft.ru</p>
+                <p style="margin: 4px 0; color: #555">8-800-222-45-43</p>
+            </div>
+
+            <div class="team-member">
+                <img src="foto/alex.jpg" alt="Фото специалиста" class="team-photo" />
+                <h3 style="font-size: 1.1em; margin: 8px 0">
+                    Гречко Алексей Сергеевич
+                </h3>
+                <p style="margin: 4px 0; font-size: 0.95em">
+                    Руководитель технической службы поддержки
+                </p>
+                <p style="margin: 4px 0; color: #555">grechkoAS@iprosoft.ru</p>
+                <p style="margin: 4px 0; color: #555">8-800-222-45-431</p>
+            </div>
+
+            <div class="team-member">
+                <img src="foto/know.jpg" alt="Фото специалиста" class="team-photo" />
+                <h3 style="font-size: 1.1em; margin: 8px 0">
+                    Сидоров Алексей Викторович
+                </h3>
+                <p style="margin: 4px 0; font-size: 0.95em">Технический эксперт</p>
+                <p style="margin: 4px 0; color: #555">sidorov@example.com</p>
+                <p style="margin: 4px 0; color: #555">8-800-222-45-43</p>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="news-section">
+                <h2 style="margin-bottom: 20px">Новости и обучение</h2>
+
+                <div class="news-item">
+                    <div class="news-date">15 мая 2025</div>
+                    <div class="news-title">Обновление системы Техэксперт</div>
+                    <div class="news-text">
+                        Состоялось обновление системы до версии 2.5. В новой версии
+                        добавлены функции автоматического анализа технической
+                        документации.
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-date">22 мая 2025</div>
+                    <div class="news-title">Запись на обучение</div>
+                    <div class="news-text">
+                        Открыта запись на базовый курс по работе с системой Техэксперт.
+                        Обучение пройдет 5-7 июня в онлайн-формате.
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-date">30 мая 2025</div>
+                    <div class="news-title">Изменения в СПП</div>
+                    <div class="news-text">
+                        Обновлен интерфейс системы поддержки пользователей. Теперь вы
+                        можете прикреплять несколько файлов к одному запросу.
+                    </div>
+                </div>
+
+                <div class="bottom-sections">
+                    <div class="bottom-section">
+                        <h2 style="margin-bottom: 15px">FAQ</h2>
+                        <details>
+                            <summary>Как работает система?</summary>
+                            <p>
+                                Перейдите в Личный кабинет → Забыли пароль? → Введите email и
+                                следуйте инструкции.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Как связаться с поддержкой?</summary>
+                            <p>Нажмите кнопку "Написать нам" в правом нижнем углу.</p>
+                        </details>
+                        <details>
+                            <summary>Как прикрепить файл к запросу?</summary>
+                            <p>
+                                При заполнении формы укажите документы через кнопку
+                                «Прикрепить файл».
+                            </p>
+                        </details>
+                    </div>
+
+                    <div class="bottom-section">
+                        <h2 style="margin-bottom: 15px">Полезное</h2>
+                        <div class="knowledge-links">
+                            <ul>
+                                <li><a href="#">Пользовательское руководство PDF</a></li>
+                                <li><a href="#">Видеоуроки по использованию СПП</a></li>
+                                <li><a href="#">Онлайн-чат технической поддержки</a></li>
+                                <li><a href="#">Порядок регистрации в системе</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-section">
+                <h2 style="margin-bottom: 20px">Календарь мероприятий</h2>
+                <div class="calendar-container" id="calendar-container">
+                    <div class="calendar-header">
+                        <div class="month-year">Июнь 2025</div>
+                        <div class="nav-buttons-calendar">
+                            <button id="prev-month">←</button>
+                            <button id="next-month">→</button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid" id="calendar-grid">
+                        <div class="day-header">Пн</div>
+                        <div class="day-header">Вт</div>
+                        <div class="day-header">Ср</div>
+                        <div class="day-header">Чт</div>
+                        <div class="day-header">Пт</div>
+                        <div class="day-header">Сб</div>
+                        <div class="day-header">Вс</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-section" id="quizSection">
+        <div class="quiz-header">
+            <h2>КВИЗ по системе Техэксперт</h2>
+            <p>Проверьте свои знания, ответив на 10 вопросов</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="question-section" id="question-section">
+            <div class="question-text" id="question-text"></div>
+            <div class="options" id="options"></div>
+            <div class="explanation" id="explanation"></div>
+            <div class="actions">
+                <button class="btn" id="next-btn" disabled>Следующий вопрос</button>
+            </div>
+        </div>
+
+        <div class="result-section" id="result-section">
+            <h2>Результат</h2>
+            <div class="result-message" id="result-message"></div>
+            <img
+                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMwMDUhOTljIj5TZXJ0aWZpY2F0ZSBvZiBBY2hpZXZlbWVudDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDA1YTljIj5UaGlzIGNlcnRpZmljYXRlIGlzIGF3YXJkZWQgdG88L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI2MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMwMDUhOTljIj5bVXNlciBOYW1lXTwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjcwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDA1YTljIj5mb3Igc3VjY2Vzc2Z1bCBjb21wbGV0aW9uIG9mIHRoZSBUZWNoRXhwZXJ0IFF1aXo8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI4NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzY2NiI+Q2VydGlmaWNhdGUgSUQ6IFRFUS0yMDI1LTUyOTwvdGV4dD48L3N2Zz4="
+                alt="Сертификат"
+                class="certificate"
+                id="certificate"
+            />
+            <div class="study-links" id="study-links" style="display: none">
+                <h3>Рекомендуемые материалы для изучения:</h3>
+                <ul>
+                    <li><a href="#">Руководство пользователя Техэксперт</a></li>
+                    <li><a href="#">Видеокурс по основам работы</a></li>
+                    <li><a href="#">Часто задаваемые вопросы</a></li>
+                    <li><a href="#">Документация по модулям</a></li>
+                </ul>
+            </div>
+            <button class="btn glowing-btn" id="restart-btn">Пройти еще раз</button>
+            <button
+                class="btn"
+                id="back-to-main"
+                style="margin-top: 15px; background-color: var(--blue)"
+            >
+                Вернуться на главную
+            </button>
+        </div>
+    </div>
+
+    <div class="newspapers-section">
+        <div class="newspapers-header">
+            <h2 class="shining-title">Профессиональные издания</h2>
+            <p>Актуальные выпуски отраслевых газет</p>
+        </div>
+
+        <div class="newspapers-carousel">
+            <div class="newspapers-container" id="newspapersContainer">
+                <div class="newspaper-item">
+                    <div style="position:relative">
+                        <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Охрана труда" class="newspaper-cover">
+                        <div class="pdf-indicator">PDF</div>
+                    </div>
+                    <div class="newspaper-info">
+                        <div class="newspaper-title">Охрана труда и промышленная безопасность</div>
+                        <div class="newspaper-date">Апрель 2025</div>
+                    </div>
+                </div>
+                
+                <div class="newspaper-item">
+                    <div style="position:relative">
+                        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Строительство" class="newspaper-cover">
+                        <div class="pdf-indicator">PDF</div>
+                    </div>
+                    <div class="newspaper-info">
+                        <div class="newspaper-title">Строительство и архитектура</div>
+                        <div class="newspaper-date">Апрель 2025</div>
+                    </div>
+                </div>
+                
+                <div class="newspaper-item">
+                    <div style="position:relative">
+                        <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Экология" class="newspaper-cover">
+                        <div class="pdf-indicator">PDF</div>
+                    </div>
+                    <div class="newspaper-info">
+                        <div class="newspaper-title">Экология и природопользование</div>
+                        <div class="newspaper-date">Март 2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-btn prev-btn">&lt;</button>
+            <button class="carousel-btn next-btn">&gt;</button>
+        </div>
+
+        <div class="carousel-nav" id="carouselNav">
+            <div class="carousel-dot active"></div>
+            <div class="carousel-dot"></div>
+            <div class="carousel-dot"></div>
+        </div>
+    </div>
+
+    <div class="newspaper-modal" id="newspaperModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeNewspaperModal">&times;</button>
+            <iframe class="modal-iframe" id="newspaperFrame"></iframe>
+        </div>
+    </div>
+
+    <button class="floating-contact" id="openSupportBtn">Написать нам</button>
+
+    <footer>
+        <p>© 2025 Информпроект Групп. Служба поддержки пользователей.</p>
+    </footer>
+
+    <script>
+        // Управление панелью поддержки
+        const panel = document.getElementById("supportPanel");
+        const openBtn = document.getElementById("openSupportBtn");
+        const closeBtn = document.getElementById("closePanel");
+        const panelHeader = document.getElementById("panelHeader");
+        const form = document.getElementById("supportForm");
+
+        window.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                panel.classList.add("active");
+            }, 1000);
+        });
+
+        openBtn.addEventListener("click", () => {
+            panel.classList.add("active");
+        });
+
+        closeBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            panel.classList.remove("active");
+        });
+
+        panelHeader.addEventListener("click", () => {
+            panel.classList.remove("active");
+        });
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            alert("Сообщение отправлено! Мы свяжемся с вами в ближайшее время.");
+            form.reset();
+            panel.classList.remove("active");
+        });
+
+        closeBtn.addEventListener("click", () => {
+            const formData = new FormData(form);
+            localStorage.setItem(
+                "supportFormData",
+                JSON.stringify(Object.fromEntries(formData))
+            );
+        });
+
+        openBtn.addEventListener("click", () => {
+            const savedData = localStorage.getItem("supportFormData");
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                form.elements.name.value = data.name || "";
+                form.elements.email.value = data.email || "";
+                form.elements.message.value = data.message || "";
+            }
+        });
+
+        // Управление модальным окном мероприятий
+        const eventModal = document.getElementById("eventModal");
+        const closeModal = document.getElementById("closeModal");
+        const modalDateTitle = document.getElementById("modalDateTitle");
+        const eventList = document.getElementById("eventList");
+
+        closeModal.addEventListener("click", () => {
+            eventModal.classList.remove("active");
+        });
+
+        eventModal.addEventListener("click", (e) => {
+            if (e.target === eventModal) {
+                eventModal.classList.remove("active");
+            }
+        });
+
+        // Код для календаря
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+
+            const events = {
+                "2025-6-10": [
+                    {
+                        id: 1,
+                        title: "Обучение для специалистов Охраны труда",
+                        time: "10:00 - 12:00",
+                        type: 1,
+                        description: "Базовый курс по работе с системой для специалистов по охране труда.",
+                        conferenceId: "techexpert-training-ot"
+                    },
+                ],
+                "2025-6-15": [
+                    {
+                        id: 2,
+                        title: "Обучение для специалистов Экологии",
+                        time: "14:00 - 16:00",
+                        type: 2,
+                        description: "Особенности работы с экологической документацией.",
+                        conferenceId: "techexpert-training-eco"
+                    },
+                    {
+                        id: 3,
+                        title: "Обучение для Проектировщиков",
+                        time: "16:30 - 18:30",
+                        type: 2,
+                        description: "Использование системы для проектной документации.",
+                        conferenceId: "techexpert-training-design"
+                    },
+                ],
+                "2025-6-20": [
+                    {
+                        id: 4,
+                        title: "Изучаем kAssist",
+                        time: "11:00 - 13:00",
+                        type: 3,
+                        description: "Основы работы с модулем kAssist для технических писателей.",
+                        conferenceId: "techexpert-training-kassist"
+                    },
+                ],
+                "2025-6-25": [
+                    {
+                        id: 5,
+                        title: "Система управления НТД",
+                        time: "15:00 - 17:00",
+                        type: 4,
+                        description: "Работа с нормативно-технической документацией.",
+                        conferenceId: "techexpert-training-ntd"
+                    },
+                ],
+            };
+
+            function generateCalendar(month, year) {
+                const calendarGrid = document.getElementById("calendar-grid");
+                while (calendarGrid.children.length > 7) {
+                    calendarGrid.removeChild(calendarGrid.lastChild);
+                }
+
+                const monthNames = [
+                    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+                ];
+                document.querySelector(".month-year").textContent = `${monthNames[month]} ${year}`;
+
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const firstDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+                for (let i = 0; i < firstDayOfWeek; i++) {
+                    const emptyDay = document.createElement("div");
+                    emptyDay.className = "day empty-day";
+                    calendarGrid.appendChild(emptyDay);
+                }
+
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(year, month, day);
+                    const dateKey = `${year}-${month + 1}-${day}`;
+                    const dayEvents = events[dateKey] || [];
+
+                    const dayElement = document.createElement("div");
+                    dayElement.className = "day";
+
+                    if (dayEvents.length > 0) {
+                        dayElement.classList.add("has-events");
+                    }
+
+                    const dayNumber = document.createElement("div");
+                    dayNumber.className = "day-number";
+                    dayNumber.textContent = day;
+                    dayElement.appendChild(dayNumber);
+
+                    dayEvents.forEach((event) => {
+                        const indicator = document.createElement("div");
+                        indicator.className = `event-indicator event-type-${event.type}`;
+                        dayElement.appendChild(indicator);
+                    });
+
+                    if (dayEvents.length > 0) {
+                        dayElement.addEventListener("click", () => {
+                            openEventModal(dateKey, dayEvents, day, month + 1, year);
+                        });
+                    }
+
+                    calendarGrid.appendChild(dayElement);
+                }
+            }
+
+            function openEventModal(dateKey, events, day, month, year) {
+                const monthNames = [
+                    "января", "февраля", "марта", "апреля", "мая", "июня",
+                    "июля", "августа", "сентября", "октября", "ноября", "декабря"
+                ];
+                const formattedDate = `${day} ${monthNames[month - 1]} ${year}`;
+
+                modalDateTitle.textContent = `Мероприятия на ${formattedDate}`;
+                eventList.innerHTML = "";
+
+                events.forEach((event) => {
+                    const eventElement = document.createElement("div");
+                    eventElement.className = "event-item";
+
+                    const title = document.createElement("div");
+                    title.className = "event-name";
+                    title.textContent = event.title;
+                    eventElement.appendChild(title);
+
+                    const dateTime = document.createElement("div");
+                    dateTime.className = "event-date";
+                    dateTime.textContent = `${formattedDate}, ${event.time}`;
+                    eventElement.appendChild(dateTime);
+
+                    const goal = document.createElement("div");
+                    goal.className = "event-goal";
+                    goal.textContent = event.description;
+                    eventElement.appendChild(goal);
+
+                    const registerBtn = document.createElement("a");
+                    registerBtn.href = `training.html?event=${encodeURIComponent(event.title)}`;
+                    registerBtn.className = "register-btn";
+                    registerBtn.textContent = "Зарегистрироваться";
+                    eventElement.appendChild(registerBtn);
+
+                    const joinBtn = document.createElement("a");
+                    joinBtn.href = `conference.html?id=${encodeURIComponent(event.conferenceId)}&title=${encodeURIComponent(event.title)}&description=${encodeURIComponent(event.description)}`;
+                    joinBtn.className = "join-conference-btn";
+                    joinBtn.textContent = "Присоединиться к конференции";
+                    eventElement.appendChild(joinBtn);
+
+                    eventList.appendChild(eventElement);
+                });
+
+                eventModal.classList.add("active");
+            }
+
+            generateCalendar(currentMonth, currentYear);
+
+            document.getElementById("prev-month").addEventListener("click", function () {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                generateCalendar(currentMonth, currentYear);
+            });
+
+            document.getElementById("next-month").addEventListener("click", function () {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                generateCalendar(currentMonth, currentYear);
+            });
+        });
+
+        // Код для КВИЗа
+        document.addEventListener("DOMContentLoaded", function () {
+            const quizBtn = document.getElementById("quizBtn");
+            const quizSection = document.getElementById("quizSection");
+            const mainContent = document.querySelector(".main-content");
+            const footer = document.querySelector("footer");
+            const questionText = document.getElementById("question-text");
+            const optionsContainer = document.getElementById("options");
+            const explanationDiv = document.getElementById("explanation");
+            const nextBtn = document.getElementById("next-btn");
+            const progressBar = document.getElementById("progress");
+            const questionSection = document.getElementById("question-section");
+            const resultSection = document.getElementById("result-section");
+            const resultMessage = document.getElementById("result-message");
+            const certificateImg = document.getElementById("certificate");
+            const studyLinks = document.getElementById("study-links");
+            const restartBtn = document.getElementById("restart-btn");
+            const backToMain = document.getElementById("back-to-main");
+
+            const quizQuestions = [
+                {
+                    question: "Какой модуль системы Техэксперт используется для управления нормативной документацией?",
+                    options: ["kNormativ", "kAssist", "kExpert", "kDocument"],
+                    correctAnswer: 1,
+                    explanation: "Модуль kAssist предназначен для работы с нормативной документацией."
+                },
+                {
+                    question: "Как часто обновляются базы нормативных документов в Техэксперт?",
+                    options: ["Ежедневно", "Еженедельно", "Ежемесячно", "Ежеквартально"],
+                    correctAnswer: 0,
+                    explanation: "Базы нормативных документов обновляются ежедневно."
+                }
+            ];
+
+            let currentQuestion = 0;
+            let score = 0;
+            let userAnswers = [];
+
+            quizBtn.addEventListener("click", () => {
+                mainContent.style.display = "none";
+                quizSection.style.display = "block";
+                footer.style.display = "none";
+                initQuiz();
+            });
+
+            backToMain.addEventListener("click", () => {
+                mainContent.style.display = "flex";
+                quizSection.style.display = "none";
+                footer.style.display = "block";
+            });
+
+            function initQuiz() {
+                currentQuestion = 0;
+                score = 0;
+                userAnswers = [];
+                questionSection.style.display = "block";
+                resultSection.style.display = "none";
+                showQuestion();
+            }
+
+            function showQuestion() {
+                const question = quizQuestions[currentQuestion];
+                questionText.textContent = question.question;
+                optionsContainer.innerHTML = "";
+                progressBar.style.width = `${(currentQuestion / quizQuestions.length) * 100}%`;
+
+                question.options.forEach((option, index) => {
+                    const optionElement = document.createElement("div");
+                    optionElement.classList.add("option");
+                    optionElement.textContent = option;
+                    optionElement.addEventListener("click", () => selectOption(optionElement, index));
+                    optionsContainer.appendChild(optionElement);
+                });
+
+                explanationDiv.classList.remove("show");
+                explanationDiv.textContent = "";
+                nextBtn.disabled = true;
+            }
+
+            function selectOption(optionElement, optionIndex) {
+                const question = quizQuestions[currentQuestion];
+                const options = optionsContainer.querySelectorAll(".option");
+                options.forEach((opt) => {
+                    opt.removeEventListener("click", selectOption);
+                });
+                optionElement.classList.add("selected");
+
+                if (optionIndex === question.correctAnswer) {
+                    optionElement.classList.add("correct");
+                    score++;
+                } else {
+                    optionElement.classList.add("incorrect");
+                    options[question.correctAnswer].classList.add("correct");
+                }
+
+                userAnswers.push({
+                    question: currentQuestion,
+                    selected: optionIndex,
+                    correct: optionIndex === question.correctAnswer
+                });
+
+                explanationDiv.textContent = question.explanation;
+                explanationDiv.classList.add("show");
+                nextBtn.disabled = false;
+            }
+
+            nextBtn.addEventListener("click", () => {
+                currentQuestion++;
+                if (currentQuestion < quizQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            });
+
+            function showResult() {
+                progressBar.style.width = "100%";
+                questionSection.style.display = "none";
+                resultSection.style.display = "block";
+                const percentage = Math.round((score / quizQuestions.length) * 100);
+                resultMessage.innerHTML = `
+                    <p>Вы ответили правильно на ${score} из ${quizQuestions.length} вопросов</p>
+                    <p>Процент правильных ответов: ${percentage}%</p>
+                `;
+
+                if (percentage >= 80) {
+                    resultMessage.innerHTML += `<div class="result-success">Поздравляем! Вы успешно прошли квиз!</div>`;
+                    certificateImg.style.display = "block";
+                    studyLinks.style.display = "none";
+                } else {
+                    resultMessage.innerHTML += `<div class="result-fail">К сожалению, вы не прошли квиз. Рекомендуем изучить материалы и попробовать снова.</div>`;
+                    certificateImg.style.display = "none";
+                    studyLinks.style.display = "block";
+                }
+            }
+
+            restartBtn.addEventListener("click", () => {
+                initQuiz();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG-КВИЗ: Прокачай свой профиль специалиста</title>
+    <style>
+        :root {
+            --blue: #005a9c;
+            --orange: #ff6f31;
+            --light-bg: #f9f9f9;
+            --dark: #222;
+            --border-radius: 12px;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --success: #4caf50;
+            --error: #f44336;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #005a9c);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .rpg-header {
+            text-align: center;
+            padding: 20px 0 30px;
+        }
+
+        .rpg-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .rpg-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #ffd166;
+        }
+
+        .rpg-container {
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .leaderboard-section {
+            width: 30%;
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            color: var(--dark);
+        }
+        
+        .leaderboard-section h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--blue);
+            font-size: 1.4rem;
+        }
+        
+        .leaderboard {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 1.1rem;
+        }
+        
+        .leaderboard-item:nth-child(1) {
+            background: linear-gradient(to right, #ffd166, #ff9a3c);
+            font-weight: bold;
+            border-radius: var(--border-radius);
+        }
+        
+        .leaderboard-item:nth-child(2) {
+            background: linear-gradient(to right, #d7d7d7, #c0c0c0);
+            border-radius: var(--border-radius);
+        }
+        
+        .leaderboard-item:nth-child(3) {
+            background: linear-gradient(to right, #e4b16a, #d39c5c);
+            border-radius: var(--border-radius);
+        }
+        
+        .player-info {
+            font-weight: bold;
+        }
+        
+        .player-stats {
+            color: var(--blue);
+            font-weight: bold;
+        }
+        
+        .quiz-section-rpg {
+            flex: 1;
+        }
+        
+        .player-profile {
+            background: linear-gradient(to right, var(--blue), #003d6b);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .player-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .player-level {
+            text-align: center;
+        }
+        
+        .level-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(255, 111, 49, 0.7);
+            border: 3px solid white;
+        }
+        
+        .xp-bar {
+            width: 100%;
+            height: 18px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .xp-progress {
+            height: 100%;
+            background: linear-gradient(to right, #4caf50, #8bc34a);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .xp-text {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #ffd166, #ff9a3c);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            z-index: 3000;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 400px;
+            max-width: 90%;
+            border: 4px solid white;
+        }
+        
+        .achievement-popup.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .achievement-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: #d62828;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .achievement-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #003049;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .achievement-desc {
+            margin-bottom: 25px;
+            color: #003049;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .document-link {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        
+        .document-link:hover {
+            background: #004a8f;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-achievement {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close-achievement:hover {
+            background: #004a8f;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .start-screen {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .start-screen h2 {
+            color: #ffd166;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .name-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .start-btn {
+            background: var(--orange);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .start-btn:hover {
+            background: #e05b24;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .question-screen {
+            display: none;
+        }
+        
+        .question-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+        
+        .option:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .option.selected {
+            border-color: var(--blue);
+            background: rgba(0, 90, 156, 0.3);
+        }
+        
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(76, 175, 80, 0.3);
+        }
+        
+        .option.incorrect {
+            border-color: var(--error);
+            background: rgba(244, 67, 54, 0.3);
+        }
+        
+        .explanation {
+            padding: 25px;
+            background: rgba(0, 90, 156, 0.2);
+            border-left: 4px solid var(--blue);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin-bottom: 20px;
+            display: none;
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .explanation.show {
+            display: block;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 15px 35px;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .btn:hover:not(:disabled) {
+            background: #e05b24;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .result-screen-rpg {
+            text-align: center;
+            padding: 40px;
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .result-screen-rpg h2 {
+            color: #ffd166;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .result-message {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: var(--border-radius);
+        }
+        
+        .back-btn {
+            background: var(--blue);
+            margin-top: 15px;
+        }
+        
+        .back-btn:hover {
+            background: #003d6b;
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: #f00;
+            z-index: 3100;
+            opacity: 0;
+            border-radius: 50%;
+        }
+
+        /* Адаптация для мобильных */
+        @media (max-width: 900px) {
+            .rpg-container {
+                flex-direction: column;
+            }
+            
+            .leaderboard-section, .quiz-section-rpg {
+                width: 100%;
+            }
+            
+            .player-profile {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="rpg-header">
+            <h1>RPG-КВИЗ: Прокачай свой профиль специалиста!</h1>
+            <p>Отвечай на вопросы, получай опыт, редкие документы и соревнуйся с коллегами</p>
+        </div>
+        
+        <div class="rpg-container">
+            <!-- Таблица рекордов -->
+            <div class="leaderboard-section">
+                <h3>?? Таблица рекордсменов</h3>
+                <div class="leaderboard" id="leaderboard">
+                    <!-- Заполняется через JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Область квиза -->
+            <div class="quiz-section-rpg">
+                <!-- Стартовый экран с вводом имени -->
+                <div class="start-screen" id="startScreen">
+                    <h2>Начни свое приключение!</h2>
+                    <p>Введи свое имя и фамилию для создания профиля специалиста</p>
+                    <form class="name-form" id="nameForm">
+                        <input type="text" class="name-input" id="firstName" placeholder="Имя" required>
+                        <input type="text" class="name-input" id="lastName" placeholder="Фамилия" required>
+                        <button type="submit" class="start-btn">Начать квиз</button>
+                    </form>
+                </div>
+                
+                <!-- Экран с вопросами -->
+                <div class="question-screen" id="questionScreen">
+                    <div class="player-profile">
+                        <div class="player-name" id="playerName">Иванов Иван</div>
+                        <div class="player-level">
+                            <div class="level-circle" id="levelCircle">1</div>
+                            <div class="xp-bar">
+                                <div class="xp-progress" id="xpProgress" style="width: 0%"></div>
+                            </div>
+                            <div class="xp-text">Опыт: <span id="currentXP">0</span>/<span id="neededXP">100</span> XP</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-section">
+                        <div class="question-text" id="rpgQuestionText"></div>
+                        <div class="options" id="rpgOptions"></div>
+                        <div class="explanation" id="rpgExplanation"></div>
+                        <div class="actions">
+                            <button class="btn" id="rpgNextBtn" disabled>Следующий вопрос</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Экран с результатами -->
+                <div class="result-screen-rpg" id="resultScreenRpg">
+                    <h2>Квиз завершен!</h2>
+                    <div class="result-message">
+                        <p>Поздравляем, <span id="resultPlayerName"></span>!</p>
+                        <p>Вы достигли <span id="resultLevel"></span> уровня</p>
+                        <p>Ваш профиль специалиста успешно прокачан!</p>
+                        <p>Правильных ответов: <span id="correctAnswers"></span> из 13</p>
+                    </div>
+                    <button class="btn glowing-btn" id="rpgRestartBtn">Пройти еще раз</button>
+                    <button class="btn back-btn" id="rpgBackToMain">
+                        Вернуться на главную
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Оверлей и попап для ачивок -->
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-icon">??</div>
+        <div class="achievement-title" id="achievementTitle">Новый уровень!</div>
+        <div class="achievement-desc" id="achievementDesc">Вы достигли 2 уровня!</div>
+        <a href="#" class="document-link" id="documentLink" download>Скачать редкий документ</a>
+        <button class="close-achievement" id="closeAchievement">Продолжить</button>
+    </div>
+
+    <script>
+        // Переменные для RPG-КВИЗа
+        let player = {
+            firstName: '',
+            lastName: '',
+            xp: 0,
+            level: 1,
+            correctAnswers: 0
+        };
+        
+        const XP_PER_QUESTION = 20;
+        const XP_PER_LEVEL = 100;
+        let currentQuestionIndex = 0;
+        
+        // Редкие документы для наград
+        const rareDocuments = [
+            "ГОСТ Р 1.0-2012 Стандартизация в Российской Федерации",
+            "ГОСТ Р 1.2-2014 Стандарты национальные Российской Федерации",
+            "ГОСТ Р 1.4-2004 Стандартизация в Российской Федерации",
+            "ГОСТ Р 1.5-2012 Стандарты национальные Российской Федерации",
+            "ГОСТ Р 1.8-2011 Стандартизация в Российской Федерации",
+            "ГОСТ Р 1.10-2004 Стандартизация в Российской Федерации",
+            "ГОСТ Р 1.12-2004 Стандартизация в Российской Федерации",
+            "ГОСТ Р 2.601-2019 Единая система конструкторской документации",
+            "ГОСТ Р 7.0.97-2016 Система стандартов по информации, библиотечному и издательскому делу",
+            "ГОСТ Р 22.0.02-2016 Безопасность в чрезвычайных ситуациях"
+        ];
+        
+        // Вопросы для RPG-КВИЗа (13 вопросов)
+        const rpgQuestions = [
+            {
+                question: "Какой ГОСТ регулирует требования к оформлению конструкторской документации?",
+                options: [
+                    "ГОСТ 2.301-68",
+                    "ГОСТ Р 7.0.97-2016",
+                    "ГОСТ 2.104-2006",
+                    "ГОСТ 2.109-73"
+                ],
+                correctAnswer: 2,
+                explanation: "ГОСТ 2.104-2006 устанавливает единую систему обозначения изделий и конструкторских документов."
+            },
+            {
+                question: "Что означает аббревиатура 'СП' в нормативной документации?",
+                options: [
+                    "Строительные правила",
+                    "Санитарные положения",
+                    "Стандарты производства",
+                    "Специальные предписания"
+                ],
+                correctAnswer: 0,
+                explanation: "СП - это Свод правил, документ в области стандартизации, содержащий технические правила и описания процессов проектирования, строительства и эксплуатации."
+            },
+            {
+                question: "Какой документ устанавливает требования к системе менеджмента качества?",
+                options: [
+                    "ГОСТ Р ИСО 9001-2015",
+                    "ГОСТ Р 7.0.97-2016",
+                    "ГОСТ 12.0.004-2015",
+                    "ГОСТ Р 55846-2013"
+                ],
+                correctAnswer: 0,
+                explanation: "ГОСТ Р ИСО 9001-2015 устанавливает требования к системе менеджмента качества, когда организация стремится продемонстрировать свою способность."
+            },
+            {
+                question: "Какая функция в системе Техэксперт позволяет отслеживать изменения в документах?",
+                options: [
+                    "Поиск по реквизитам",
+                    "Контроль изменений",
+                    "Сравнение документов",
+                    "Экспорт в Word"
+                ],
+                correctAnswer: 1,
+                explanation: "Функция 'Контроль изменений' позволяет отслеживать изменения в документах и получать уведомления об их обновлении."
+            },
+            {
+                question: "Что такое 'Положение о стандартизации' в организации?",
+                options: [
+                    "Документ, описывающий правила применения стандартов",
+                    "Перечень действующих ГОСТов",
+                    "Инструкция по работе с системой Техэксперт",
+                    "План мероприятий по стандартизации"
+                ],
+                correctAnswer: 0,
+                explanation: "Положение о стандартизации определяет правила и порядок применения стандартов в организации."
+            },
+            {
+                question: "Какой ГОСТ устанавливает требования к системе экологического менеджмента?",
+                options: [
+                    "ГОСТ Р ИСО 14001-2016",
+                    "ГОСТ Р 54934-2012",
+                    "ГОСТ Р ИСО 50001-2012",
+                    "ГОСТ Р 55846-2013"
+                ],
+                correctAnswer: 0,
+                explanation: "ГОСТ Р ИСО 14001-2016 устанавливает требования к системе экологического менеджмента."
+            },
+            {
+                question: "Что означает маркировка 'РК' в обозначении стандарта?",
+                options: [
+                    "Редакция с изменениями",
+                    "Рекомендательный характер",
+                    "Республика Казахстан",
+                    "Региональный стандарт"
+                ],
+                correctAnswer: 0,
+                explanation: "Маркировка 'РК' означает редакцию стандарта с изменениями."
+            },
+            {
+                question: "Какой документ устанавливает требования к безопасности информации?",
+                options: [
+                    "ГОСТ Р 57580.1-2017",
+                    "ГОСТ Р ИСО/МЭК 27001-2006",
+                    "ГОСТ Р 22.0.02-2016",
+                    "ГОСТ Р 12.0.006-2002"
+                ],
+                correctAnswer: 1,
+                explanation: "ГОСТ Р ИСО/МЭК 27001-2006 устанавливает требования к системе менеджмента информационной безопасности."
+            },
+            {
+                question: "Что такое 'Технический регламент'?",
+                options: [
+                    "Документ, устанавливающий обязательные требования к продукции",
+                    "Инструкция по эксплуатации оборудования",
+                    "Стандарт организации",
+                    "Методические указания по применению стандартов"
+                ],
+                correctAnswer: 0,
+                explanation: "Технический регламент - документ, устанавливающий обязательные требования к продукции или связанным с ними процессам."
+            },
+            {
+                question: "Какой ГОСТ регулирует требования к оформлению текстовых документов?",
+                options: [
+                    "ГОСТ 2.105-95",
+                    "ГОСТ Р 7.0.97-2016",
+                    "ГОСТ 7.32-2001",
+                    "ГОСТ 2.004-88"
+                ],
+                correctAnswer: 1,
+                explanation: "ГОСТ Р 7.0.97-2016 устанавливает требования к оформлению организационно-распорядительных документов."
+            },
+            {
+                question: "Что такое 'ГОСТ Р'?",
+                options: [
+                    "Межгосударственный стандарт",
+                    "Национальный стандарт РФ",
+                    "Отраслевой стандарт",
+                    "Стандарт организации"
+                ],
+                correctAnswer: 1,
+                explanation: "ГОСТ Р - национальный стандарт Российской Федерации."
+            },
+            {
+                question: "Какой модуль в системе Техэксперт предназначен для управления нормативной базой?",
+                options: [
+                    "kNormativ",
+                    "kAssist",
+                    "kExpert",
+                    "kDocument"
+                ],
+                correctAnswer: 0,
+                explanation: "Модуль kNormativ предназначен для работы с нормативной базой документов."
+            },
+            {
+                question: "Что такое 'ОКС' в обозначении стандарта?",
+                options: [
+                    "Общероссийский классификатор стандартов",
+                    "Обозначение категории стандарта",
+                    "Общероссийский код системы",
+                    "Область контроля стандартизации"
+                ],
+                correctAnswer: 0,
+                explanation: "ОКС - Общероссийский классификатор стандартов, который определяет область применения стандарта."
+            }
+        ];
+        
+        // Элементы интерфейса
+        const startScreen = document.getElementById('startScreen');
+        const questionScreen = document.getElementById('questionScreen');
+        const resultScreenRpg = document.getElementById('resultScreenRpg');
+        const nameForm = document.getElementById('nameForm');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const playerNameEl = document.getElementById('playerName');
+        const levelCircle = document.getElementById('levelCircle');
+        const xpProgress = document.getElementById('xpProgress');
+        const currentXPSpan = document.getElementById('currentXP');
+        const neededXPSpan = document.getElementById('neededXP');
+        const rpgQuestionText = document.getElementById('rpgQuestionText');
+        const rpgOptions = document.getElementById('rpgOptions');
+        const rpgExplanation = document.getElementById('rpgExplanation');
+        const rpgNextBtn = document.getElementById('rpgNextBtn');
+        const rpgRestartBtn = document.getElementById('rpgRestartBtn');
+        const rpgBackToMain = document.getElementById('rpgBackToMain');
+        const resultPlayerName = document.getElementById('resultPlayerName');
+        const resultLevel = document.getElementById('resultLevel');
+        const correctAnswersSpan = document.getElementById('correctAnswers');
+        const achievementPopup = document.getElementById('achievementPopup');
+        const achievementTitle = document.getElementById('achievementTitle');
+        const achievementDesc = document.getElementById('achievementDesc');
+        const documentLink = document.getElementById('documentLink');
+        const closeAchievement = document.getElementById('closeAchievement');
+        const overlay = document.getElementById('overlay');
+        const leaderboard = document.getElementById('leaderboard');
+        
+        // Обработчики событий
+        nameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            player.firstName = firstNameInput.value.trim();
+            player.lastName = lastNameInput.value.trim();
+            
+            if (player.firstName && player.lastName) {
+                playerNameEl.textContent = `${player.lastName} ${player.firstName}`;
+                startScreen.style.display = 'none';
+                questionScreen.style.display = 'block';
+                showQuestion();
+            }
+        });
+        
+        rpgNextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < rpgQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                // Квиз завершен
+                questionScreen.style.display = 'none';
+                resultScreenRpg.style.display = 'block';
+                resultPlayerName.textContent = `${player.lastName} ${player.firstName}`;
+                resultLevel.textContent = player.level;
+                correctAnswersSpan.textContent = player.correctAnswers;
+                savePlayerResult();
+                loadLeaderboard();
+            }
+        });
+        
+        rpgRestartBtn.addEventListener('click', () => {
+            resetGame();
+            resultScreenRpg.style.display = 'none';
+            startScreen.style.display = 'block';
+        });
+        
+        rpgBackToMain.addEventListener('click', () => {
+            window.location.href = 'index.html'; // Вернуться на главную
+        });
+        
+        closeAchievement.addEventListener('click', () => {
+            achievementPopup.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        // Функции для работы с RPG-КВИЗом
+        function showQuestion() {
+            const question = rpgQuestions[currentQuestionIndex];
+            rpgQuestionText.textContent = question.question;
+            rpgOptions.innerHTML = '';
+            rpgExplanation.textContent = '';
+            rpgExplanation.classList.remove('show');
+            rpgNextBtn.disabled = true;
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(optionElement, index, question.correctAnswer));
+                rpgOptions.appendChild(optionElement);
+            });
+            
+            // Обновление прогресса
+            updateProgress();
+        }
+        
+        function selectOption(optionElement, selectedIndex, correctIndex) {
+            const options = rpgOptions.querySelectorAll('.option');
+            
+            // Отключаем все варианты
+            options.forEach(opt => {
+                opt.removeEventListener('click', selectOption);
+            });
+            
+            // Помечаем выбранный вариант
+            optionElement.classList.add('selected');
+            
+            // Проверяем ответ
+            if (selectedIndex === correctIndex) {
+                optionElement.classList.add('correct');
+                player.correctAnswers++;
+                addXP(XP_PER_QUESTION);
+            } else {
+                optionElement.classList.add('incorrect');
+                // Помечаем правильный ответ
+                options[correctIndex].classList.add('correct');
+            }
+            
+            // Показываем объяснение
+            rpgExplanation.textContent = rpgQuestions[currentQuestionIndex].explanation;
+            rpgExplanation.classList.add('show');
+            
+            // Активируем кнопку "Следующий вопрос"
+            rpgNextBtn.disabled = false;
+        }
+        
+        function addXP(amount) {
+            player.xp += amount;
+            const prevLevel = player.level;
+            
+            // Проверяем, достигнут ли новый уровень
+            player.level = Math.min(Math.floor(player.xp / XP_PER_LEVEL) + 1, 10);
+            
+            if (player.level > prevLevel) {
+                showAchievement(player.level);
+            }
+            
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const currentLevelXP = player.xp % XP_PER_LEVEL;
+            const progressPercent = (currentLevelXP / XP_PER_LEVEL) * 100;
+            
+            xpProgress.style.width = `${progressPercent}%`;
+            currentXPSpan.textContent = currentLevelXP;
+            neededXPSpan.textContent = XP_PER_LEVEL;
+            levelCircle.textContent = player.level;
+        }
+        
+        function showAchievement(level) {
+            achievementTitle.textContent = `Достижение: Уровень ${level}!`;
+            achievementDesc.textContent = `Вы достигли ${level} уровня и получаете редкий документ в награду!`;
+            
+            // Устанавливаем документ для скачивания
+            documentLink.textContent = rareDocuments[level - 1];
+            documentLink.href = `#doc-${level}`;
+            
+            // Показываем попап
+            achievementPopup.classList.add('active');
+            overlay.classList.add('active');
+            
+            // Создаем конфетти
+            createConfetti();
+        }
+        
+        function createConfetti() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = '100vh';
+                confetti.style.opacity = '1';
+                document.body.appendChild(confetti);
+                
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0)', opacity: 1 },
+                    { transform: `translateY(-${100 + Math.random() * 100}vh) rotate(${360 + Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 2000 + Math.random() * 3000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+        
+        function savePlayerResult() {
+            const players = JSON.parse(localStorage.getItem('rpgQuizPlayers')) || [];
+            
+            // Проверяем, есть ли уже такой игрок
+            const existingPlayerIndex = players.findIndex(p => 
+                p.firstName === player.firstName && p.lastName === player.lastName);
+            
+            // Обновляем результат, если он лучше предыдущего
+            if (existingPlayerIndex !== -1) {
+                if (player.level > players[existingPlayerIndex].level || 
+                    (player.level === players[existingPlayerIndex].level && player.xp > players[existingPlayerIndex].xp)) {
+                    players[existingPlayerIndex] = {...player};
+                }
+            } else {
+                players.push({...player});
+            }
+            
+            // Сортируем по уровню и опыту
+            players.sort((a, b) => {
+                if (b.level !== a.level) return b.level - a.level;
+                return b.xp - a.xp;
+            });
+            
+            // Сохраняем только топ-10
+            localStorage.setItem('rpgQuizPlayers', JSON.stringify(players.slice(0, 10)));
+        }
+        
+        function loadLeaderboard() {
+            const players = JSON.parse(localStorage.getItem('rpgQuizPlayers')) || [];
+            leaderboard.innerHTML = '';
+            
+            if (players.length === 0) {
+                leaderboard.innerHTML = '<div class="leaderboard-item"><div>Пока нет рекордов</div></div>';
+                return;
+            }
+            
+            players.forEach((player, index) => {
+                const playerEl = document.createElement('div');
+                playerEl.classList.add('leaderboard-item');
+                
+                playerEl.innerHTML = `
+                    <div class="player-info">${player.lastName} ${player.firstName}</div>
+                    <div class="player-stats">Ур. ${player.level} (${player.xp} XP)</div>
+                `;
+                
+                leaderboard.appendChild(playerEl);
+            });
+        }
+        
+        function resetGame() {
+            player = {
+                firstName: '',
+                lastName: '',
+                xp: 0,
+                level: 1,
+                correctAnswers: 0
+            };
+            currentQuestionIndex = 0;
+            firstNameInput.value = '';
+            lastNameInput.value = '';
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLeaderboard();
+        });
+    </script>
+</body>
+</html>

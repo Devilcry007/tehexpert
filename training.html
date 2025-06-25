@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Запись на обучение | Служба поддержки пользователей</title>
+    <style>
+      :root {
+        --blue: #005a9c;
+        --orange: #ff6f31;
+        --light-bg: #f9f9f9;
+        --dark: #222;
+        --border-radius: 12px;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #fff;
+        color: var(--dark);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        background: linear-gradient(to right, var(--blue), #003d6b);
+        color: white;
+        padding: 25px 0;
+        text-align: center;
+        position: relative;
+      }
+
+      .logo-link {
+        display: inline-block;
+        position: absolute;
+        top: 40px;
+        left: 60px;
+        z-index: 10;
+      }
+
+      .logo {
+        width: 80px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      header h1 {
+        margin-bottom: 10px;
+        font-size: 2rem;
+      }
+
+      .nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .nav-button {
+        background-color: var(--orange);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .nav-button:hover {
+        background-color: #e05b24;
+      }
+
+      /* Основной контент */
+      .training-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      .training-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .training-header h2 {
+        color: var(--blue);
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .selected-event {
+        background-color: var(--light-bg);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        margin-bottom: 30px;
+        border-left: 4px solid var(--orange);
+      }
+
+      .training-form {
+        background-color: white;
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: var(--blue);
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        background-color: white;
+      }
+
+      .form-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 1em;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 2px rgba(0, 90, 156, 0.2);
+      }
+
+      .submit-btn {
+        background-color: var(--orange);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+        width: 100%;
+      }
+
+      .submit-btn:hover {
+        background-color: #e05b24;
+      }
+
+      .success-message {
+        display: none;
+        background-color: #4caf50;
+        color: white;
+        padding: 20px;
+        border-radius: var(--border-radius);
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      footer {
+        background-color: #111;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        margin-top: auto;
+      }
+
+      @media (max-width: 768px) {
+        .training-container {
+          margin: 20px auto;
+        }
+
+        .training-form {
+          padding: 20px;
+        }
+
+        header h1 {
+          font-size: 1.5rem;
+        }
+
+        .logo-link {
+          top: 30px;
+          left: 20px;
+        }
+
+        .logo {
+          width: 60px;
+          height: 45px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <a href="https://stroyka.cntd.ru/lider/" class="logo-link">
+        <img
+          src="icon/tehexpert.png"
+          alt="Логотип компании"
+          class="logo"
+        />
+      </a>
+      <h1>Служба поддержки пользователей</h1>
+      <div class="nav-buttons">
+        <button class="nav-button">Перейти в Техэксперт</button>
+        <button class="nav-button">Задать вопрос в СПП</button>
+        <a href="index.html" class="nav-button">На главную</a>
+      </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="training-container">
+      <div class="training-header">
+        <h2>Запись на обучение</h2>
+        <p>Заполните форму ниже, чтобы зарегистрироваться на мероприятие</p>
+      </div>
+
+      <div class="selected-event" id="selectedEvent">
+        <!-- Здесь будет отображаться выбранное мероприятие -->
+      </div>
+
+      <form class="training-form" id="registrationForm">
+        <div class="form-group">
+          <label for="fullName">ФИО *</label>
+          <input type="text" id="fullName" name="fullName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Телефон *</label>
+          <input type="tel" id="phone" name="phone" required />
+        </div>
+
+        <div class="form-group">
+          <label for="company">Организация</label>
+          <input type="text" id="company" name="company" />
+        </div>
+
+        <div class="form-group">
+          <label for="position">Должность</label>
+          <input type="text" id="position" name="position" />
+        </div>
+
+        <div class="form-group">
+          <label for="event">Мероприятие *</label>
+          <select id="event" name="event" required>
+            <option value="">-- Выберите мероприятие --</option>
+            <option value="Введение в веб-разработку">
+              Обучение для специалистов Охраны труда
+            </option>
+            <option value="Продвинутый JavaScript">
+              Обучение для специалистов Экологии
+            </option>
+            <option value="Фреймворки фронтенда">
+              Обучение для Проектировщиков
+            </option>
+            <option value="Дизайн интерфейсов">Изучаем kAssist</option>
+            <option value="Backend разработка">Система управления НТД</option>
+            <option value="Основы работы с Техэксперт">
+              Основы работы с Техэксперт
+            </option>
+            <option value="Продвинутые возможности системы">
+              Продвинутые возможности системы
+            </option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">Зарегистрироваться</button>
+      </form>
+
+      <div class="success-message" id="successMessage">
+        <h3>Спасибо за регистрацию!</h3>
+        <p>
+          Мы отправили подтверждение на ваш email. До встречи на мероприятии!
+        </p>
+        <p>Вы записаны на: <span id="registeredEvent"></span></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2023 Служба технической поддержки. Все права защищены.</p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Получаем параметры URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventName = urlParams.get("event");
+
+        // Элементы DOM
+        const selectedEventDiv = document.getElementById("selectedEvent");
+        const eventSelect = document.getElementById("event");
+        const form = document.getElementById("registrationForm");
+        const successMessage = document.getElementById("successMessage");
+        const registeredEventSpan = document.getElementById("registeredEvent");
+
+        // Отображаем выбранное мероприятие (если передано в URL)
+        if (eventName) {
+          selectedEventDiv.innerHTML = `
+            <h3>Вы записываетесь на:</h3>
+            <p><strong>${decodeURIComponent(eventName)}</strong></p>
+          `;
+
+          // Устанавливаем выбранное мероприятие в select
+          eventSelect.value = decodeURIComponent(eventName);
+        } else {
+          selectedEventDiv.innerHTML = `
+            <h3>Выберите мероприятие</h3>
+            <p>Пожалуйста, выберите мероприятие из списка ниже</p>
+          `;
+        }
+
+        // Обработка формы
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Получаем данные формы
+          const formData = new FormData(form);
+          const eventName = formData.get("event");
+
+          // Показываем сообщение об успехе с названием мероприятия
+          registeredEventSpan.textContent = eventName;
+
+          // Скрываем форму и показываем сообщение об успехе
+          form.style.display = "none";
+          successMessage.style.display = "block";
+
+          // Прокручиваем к сообщению
+          successMessage.scrollIntoView({ behavior: "smooth" });
+
+          // Здесь должна быть реальная отправка данных на сервер
+          console.log("Данные формы:", {
+            fullName: formData.get("fullName"),
+            email: formData.get("email"),
+            phone: formData.get("phone"),
+            company: formData.get("company"),
+            position: formData.get("position"),
+            event: eventName,
+          });
+
+          // Пример отправки на сервер:
+          // fetch('/api/register', {
+          //   method: 'POST',
+          //   body: JSON.stringify(Object.fromEntries(formData)),
+          //   headers: {
+          //     'Content-Type': 'application/json'
+          //   }
+          // })
+          // .then(response => response.json())
+          // .then(data => {
+          //   form.style.display = 'none';
+          //   successMessage.style.display = 'block';
+          //   registeredEventSpan.textContent = eventName;
+          // })
+          // .catch(error => {
+          //   alert('Произошла ошибка при отправке формы');
+          // });
+        });
+      });
+    </script>
+  </body>
+</html>
